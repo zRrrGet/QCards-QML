@@ -2,5 +2,8 @@
     <qresource prefix="/"/>
     <qresource prefix="/qml">
         <file>MainWindow.qml</file>
+        <file>DictionarySettings.qml</file>
+        <file>DictionaryEditor.qml</file>
+        <file>ProfileSettings.qml</file>
     </qresource>
 </RCC>

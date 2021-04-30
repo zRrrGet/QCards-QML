@@ -7,7 +7,10 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        dictionarymanager.cpp \
+        main.cpp \
+        profilemanager.cpp \
+        sessionmanager.cpp
 
 RESOURCES += \
     res.qrc
@@ -28,3 +31,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     ts/QCards-QML_en_US.ts
+
+HEADERS += \
+    dictionarymanager.h \
+    profilemanager.h \
+    sessionmanager.h
