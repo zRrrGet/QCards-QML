@@ -15,12 +15,12 @@ ApplicationWindow {
     palette.button: "#00b4ff"
     title: "QCards"
     ProfileManager {
-        id: pm
+        id: profileManager
         onCurrentProfileChanged: {
             if (currentProfile!="") {
                 profileNotification.color = "#90ff8a"
                 profileNotification.border.color = "green"
-                profileLabel.text = "Profile " + pm.currentProfile + " selected"
+                profileLabel.text = "Profile " + profileManager.currentProfile + " selected"
             }
             else {
                 profileNotification.color = "#ffbfbf"
@@ -32,7 +32,6 @@ ApplicationWindow {
     ProfileSettings {
         id: profilePopup
         visible: false
-        manager: pm
     }
     DictionarySettings {
         id: dictionaryPopup
@@ -49,8 +48,8 @@ ApplicationWindow {
                 id: profileNotification
                 width: mainWindow.width
                 height: profileLabel.height+15
-                color: "#ffbfbf"                   // "#90ff8a"
-                border.color: "red"                // "green"
+                color: "#ffbfbf"
+                border.color: "red"
                 border.width: 2
                 Label {
                     anchors.centerIn: parent
@@ -60,6 +59,7 @@ ApplicationWindow {
                 }
             }
             Rectangle {
+                id: dictionaryNotification
                 anchors.top: profileNotification.bottom
                 width: mainWindow.width
                 height: dictionaryLabel.height+15
@@ -87,7 +87,6 @@ ApplicationWindow {
                 radius: 5
                 text: qsTr("Start session")
                 Layout.preferredWidth: mainWindow.width
-                onClicked: console.warn("zhopa")
             }
             RowLayout {
                 Layout.alignment: Qt.AlignBottom
@@ -108,5 +107,38 @@ ApplicationWindow {
                 }
             }
         }
+    }
+    StateGroup {
+        id: stateGroup
+        states: [
+            State {
+               name: "ProfileAndDictionary"
+               PropertyChanges { target: profileNotification; color: "#ffbfbf"; border.color: "red" }
+               PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
+               PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary is not selected") }
+            },
+            State {
+               name: "Profile"
+               PropertyChanges { target: profileNotification; color: "#ffbfbf"; border.color: "red" }
+               PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
+               PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected")}
+            },
+            State {
+               name: "Dictionary"
+               PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
+               PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
+               PropertyChanges { target: profileLabel; text: qsTr("Dictionary " + profileManager.currentProfile + " selected") }
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Profile is not selected")}
+            },
+            State {
+                name: "Ready"
+                PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
+                PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
+                PropertyChanges { target: profileLabel; text: qsTr("Dictionary " + profileManager.currentProfile + " selected") }
+                PropertyChanges { target: dictionaryLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected")}
+            }
+        ]
     }
 }

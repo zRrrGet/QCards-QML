@@ -25,7 +25,7 @@ Dialog {
         anchors.margins: parent
         clip: true
         Label {
-            text: "Dictionary:"
+            text: qsTr("Dictionary:")
         }
         ComboBox {
             Layout.alignment: Qt.AlignCenter

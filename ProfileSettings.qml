@@ -13,7 +13,6 @@ Dialog {
     visible: true
     modal: true
     standardButtons: Dialog.Ok | Dialog.Cancel
-    required property var manager;
 
     Dialog {
         id: addDialog
@@ -23,7 +22,13 @@ Dialog {
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         TextField {
+            id: textField
+            width: parent.width
             placeholderText: qsTr("Enter name")
+        }
+        onAccepted: {
+            profileManager.createProfile(textField.text);
+            textField.text = ""
         }
     }
 
@@ -40,7 +45,7 @@ Dialog {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: columnLayout.width
             Layout.bottomMargin: 20
-            model: pm.profiles
+            model: profileManager.profiles
         }
         RowLayout {
             Layout.alignment: Qt.AlignBottom
@@ -52,10 +57,9 @@ Dialog {
             Button {
                 Layout.preferredWidth: columnLayout.width/2
                 text: qsTr("Delete");
-                onClicked: manager.deleteProfile(profileSelector.currentText)
+                onClicked: profileManager.deleteProfile(profileSelector.currentText)
             }
         }
     }
-
-    onAccepted: pm.currentProfile = profileSelector.currentText;
+    onAccepted: profileManager.currentProfile = profileSelector.currentText;
 }

@@ -4,7 +4,6 @@
 
 void ProfileManager::pushProfile(const QString &p)
 {
-    jProfiles.push_back(p);
     profiles.push_back(p);
     emit profilesChanged();
 }
@@ -16,7 +15,8 @@ QString ProfileManager::getCurrentProfile() const
 
 void ProfileManager::setCurrentProfile(QString name)
 {
-    if (!jProfiles.contains(name))
+    if (std::find_if(profiles.begin(), profiles.end(),
+                      [&name](Profile &p){return p.getUserName()==name;})==profiles.end())
         std::runtime_error("In ProfileManager::setCurrentProfile: no such profile");
     currentProfile = name;
     emit currentProfileChanged();
@@ -24,13 +24,10 @@ void ProfileManager::setCurrentProfile(QString name)
 
 QVariantList ProfileManager::getJProfiles() const
 {
-    return jProfiles;
-}
-
-void ProfileManager::setJProfiles(const QVariantList &value)
-{
-    jProfiles = value;
-    emit profilesChanged();
+    QVariantList jsProfiles;
+    for(const auto& i : profiles)
+        jsProfiles.push_back(i.getUserName());
+    return jsProfiles;
 }
 
 void ProfileManager::deleteProfile(const QString &name)
@@ -50,13 +47,18 @@ void ProfileManager::deleteProfile(const QString &name)
 
 void ProfileManager::updateArrays()
 {
-    jProfiles.clear();
     profiles.clear();
     QStringList conf = QDir("profiles").entryList(QStringList() << "*.config", QDir::Files);
     for(QString &fname : conf) {
         pushProfile(fname.remove(".config"));
-        profiles.push_back(fname.remove(".config"));
     }
+}
+
+void ProfileManager::createProfile(const QString &name)
+{
+    if (QFile("profiles/"+name+".config").open(QIODevice::ReadWrite))
+        updateArrays();
+    else throw std::runtime_error("In ProfileManager::createProfile: can't open file");
 }
 
 ProfileManager::ProfileManager()

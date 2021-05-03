@@ -10,11 +10,10 @@ class ProfileManager : public QObject
     Q_OBJECT
     Q_PROPERTY(QString currentProfile READ getCurrentProfile WRITE setCurrentProfile
                NOTIFY currentProfileChanged)
-    Q_PROPERTY(QVariantList profiles READ getJProfiles WRITE setJProfiles
+    Q_PROPERTY(QVariantList profiles READ getJProfiles
                NOTIFY profilesChanged)
     QML_ELEMENT
 private:
-    QVariantList jProfiles;
     QString currentProfile;
     QVector<Profile> profiles;
 public:
@@ -26,6 +25,7 @@ public:
     void setJProfiles(const QVariantList &value);
     Q_INVOKABLE void deleteProfile(const QString &name);
     void updateArrays();
+    Q_INVOKABLE void createProfile(const QString &name);
 signals:
     void profilesChanged();
     void currentProfileChanged();
