@@ -18,40 +18,6 @@ Dialog {
         ListElement { from: "2"; to: "second" }
         ListElement { from: "3"; to: "second" }
         ListElement { from: "4"; to: "second" }
-        ListElement { from: "5"; to: "second" }
-        ListElement { from: "6"; to: "second" }
-        ListElement { from: "7"; to: "second" }
-        ListElement { from: "8"; to: "second" }
-        ListElement { from: "9"; to: "second" }
-        ListElement { from: "10"; to: "second" }
-        ListElement { from: "11"; to: "second" }
-        ListElement { from: "12"; to: "second" }
-        ListElement { from: "13"; to: "second" }
-        ListElement { from: "14"; to: "second" }
-        ListElement { from: "15"; to: "second" }
-        ListElement { from: "16"; to: "second" }
-        ListElement { from: "17"; to: "second" }
-        ListElement { from: "18"; to: "second" }
-        ListElement { from: "19"; to: "second" }
-        ListElement { from: "20"; to: "second" }
-        ListElement { from: "21"; to: "second" }
-        ListElement { from: "22"; to: "second" }
-        ListElement { from: "23"; to: "second" }
-        ListElement { from: "24"; to: "second" }
-        ListElement { from: "25"; to: "second" }
-        ListElement { from: "26"; to: "second" }
-        ListElement { from: "27"; to: "second" }
-        ListElement { from: "28"; to: "second" }
-        ListElement { from: "29"; to: "second" }
-        ListElement { from: "30"; to: "second" }
-        ListElement { from: "31"; to: "second" }
-        ListElement { from: "32"; to: "second" }
-        ListElement { from: "33"; to: "second" }
-        ListElement { from: "34"; to: "second" }
-        ListElement { from: "35"; to: "second" }
-        ListElement { from: "36"; to: "second" }
-        ListElement { from: "37"; to: "second" }
-
     }
     Label {
         id: title

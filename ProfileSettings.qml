@@ -3,6 +3,7 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.15
 import QtQml.Models 2.15
+import custom.managers 1.0
 
 Dialog {
     id: dialog
@@ -12,6 +13,19 @@ Dialog {
     visible: true
     modal: true
     standardButtons: Dialog.Ok | Dialog.Cancel
+    required property var manager;
+
+    Dialog {
+        id: addDialog
+        visible: false
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: parent.width
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        TextField {
+            placeholderText: qsTr("Enter name")
+        }
+    }
 
     ColumnLayout {
         id: columnLayout
@@ -22,21 +36,26 @@ Dialog {
         }
 
         ComboBox {
+            id: profileSelector
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: columnLayout.width
             Layout.bottomMargin: 20
+            model: pm.profiles
         }
         RowLayout {
             Layout.alignment: Qt.AlignBottom
             Button {
                 Layout.preferredWidth: columnLayout.width/2
                 text: qsTr("Add")
+                onClicked: addDialog.visible = true
             }
             Button {
                 Layout.preferredWidth: columnLayout.width/2
                 text: qsTr("Delete");
+                onClicked: manager.deleteProfile(profileSelector.currentText)
             }
         }
     }
 
+    onAccepted: pm.currentProfile = profileSelector.currentText;
 }

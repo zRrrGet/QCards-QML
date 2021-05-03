@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
+import custom.managers 1.0
 
 ApplicationWindow {
     id: mainWindow
@@ -13,9 +14,25 @@ ApplicationWindow {
     palette.window: "#8cddff"
     palette.button: "#00b4ff"
     title: "QCards"
+    ProfileManager {
+        id: pm
+        onCurrentProfileChanged: {
+            if (currentProfile!="") {
+                profileNotification.color = "#90ff8a"
+                profileNotification.border.color = "green"
+                profileLabel.text = "Profile " + pm.currentProfile + " selected"
+            }
+            else {
+                profileNotification.color = "#ffbfbf"
+                profileNotification.border.color = "red"
+                profileLabel.text = "Profile is not selected"
+            }
+        }
+    }
     ProfileSettings {
         id: profilePopup
         visible: false
+        manager: pm
     }
     DictionarySettings {
         id: dictionaryPopup
@@ -58,8 +75,6 @@ ApplicationWindow {
             }
 
         }
-
-
         ColumnLayout {
             Layout.alignment: Qt.AlignBottom
             Rectangle {
