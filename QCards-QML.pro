@@ -18,7 +18,9 @@ SOURCES += \
         profile.cpp \
         profilemanager.cpp \
         sessionmanager.cpp \
-        word.cpp
+        word.cpp \
+        wordelement.cpp \
+        wordmodel.cpp
 
 RESOURCES += \
     res.qrc
@@ -48,4 +50,6 @@ HEADERS += \
     profile.h \
     profilemanager.h \
     sessionmanager.h \
-    word.h
+    word.h \
+    wordelement.h \
+    wordmodel.h

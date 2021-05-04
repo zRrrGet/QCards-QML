@@ -3,25 +3,25 @@
 #include <vector>
 #include <word.h>
 #include <QString>
-#include <QVector>
+#include <QList>
+#include <memory>
 
 class Dictionary
 {
 private:
     QString dictName;
-    QVector<Word> words;
+    QList<Word> words;
     QString pathToDict;
 public:
     Dictionary();
-    Dictionary(QString path);
+    Dictionary(QString name);
     void insertWord(Word w);
     void deleteWord(Word w);
     void updateWords();
     void updateFile();
     long long findWord(Word w);
     long long getWordCount() const;
-    void setWordCount(long long value);
-    QVector<Word> getWords() const;
+    QList<Word> getWords() const;
     QString getPathToDict() const;
     QString getDictName() const;
 };

@@ -3,6 +3,7 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.15
 import QtQml.Models 2.15
+import custom.managers 1.0
 
 Dialog {
     id: dialog
@@ -12,24 +13,47 @@ Dialog {
     visible: true
     modal: true
     standardButtons: Dialog.Ok
-    ListModel {
-        id: wordModel
-        ListElement { from: "1"; to: "second" }
-        ListElement { from: "2"; to: "second" }
-        ListElement { from: "3"; to: "second" }
-        ListElement { from: "4"; to: "second" }
-    }
     Label {
         id: title
         text: "Content of the dictionary:"
     }
+    WordModel {
+        id: wm
+        words: dictionaryManager.currentWords
+    }
+    Dialog {
+        id: addDialog
+        visible: false
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: parent.width
+        height: parent.height
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        TextField {
+            id: fromField
+            width: parent.width
+            placeholderText: qsTr("Enter original word")
+        }
+        TextField {
+            id: toField
+            anchors.top: fromField.bottom
+            width: parent.width
+            placeholderText: qsTr("Enter translation")
+        }
+        onAccepted: {
+            dictionaryManager.addWord(fromField.text, toField.text);
+            fromField.text = ""
+            toField.text = ""
+        }
+    }
+
     ListView {
         id: table
         anchors.top: title.bottom
         y: dialog.padding
         width: dialog.width*2/3
         height: dialog.height-dialog.implicitFooterHeight-dialog.padding*3
-        model: wordModel
+        model: wm
         headerPositioning: ListView.OverlayHeader
         clip: true
         header: Item {
@@ -73,32 +97,32 @@ Dialog {
                     width: parent.width
                     height: fromLabel.height
                     Row {
-                    width: parent.width
-                    Rectangle {
-                        width: parent.width/2
-                        height: fromLabel.height
-                        color: "white"
-                        Label {
-                            id: fromLabel
-                            x: 10
-                            text: from
+                        width: parent.width
+                        Rectangle {
+                            width: parent.width/2
+                            height: fromLabel.height
+                            color: "white"
+                            Label {
+                                id: fromLabel
+                                x: 10
+                                text: from
+                            }
                         }
-                    }
-                    Rectangle {
-                        height: toLabel.height
-                        width: 1
-                        color: "black"
-                    }
-                    Rectangle {
-                        width: parent.width/2
-                        height: toLabel.height
-                        color: "white"
-                        Label {
-                            id: toLabel
-                            x: 10
-                            text: to
+                        Rectangle {
+                            height: toLabel.height
+                            width: 1
+                            color: "black"
                         }
-                    }
+                        Rectangle {
+                            width: parent.width/2
+                            height: toLabel.height
+                            color: "white"
+                            Label {
+                                id: toLabel
+                                x: 10
+                                text: to
+                            }
+                        }
                 }
                 MouseArea {
                     id: selectedRowArea
@@ -129,11 +153,15 @@ Dialog {
         Button {
             text: qsTr("Add")
             Layout.fillWidth: true
+            onClicked: {
+                addDialog.visible = true;
+            }
         }
         Button {
             Layout.alignment: Qt.AlignBottom
             text: qsTr("Delete")
             Layout.fillWidth: true
+            onClicked:  if (table.count) dictionaryManager.deleteWordAt(table.currentIndex)
         }
     }
 }

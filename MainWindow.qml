@@ -16,19 +16,11 @@ ApplicationWindow {
     title: "QCards"
     ProfileManager {
         id: profileManager
-        onCurrentProfileChanged: {
-            if (currentProfile!="") {
-                profileNotification.color = "#90ff8a"
-                profileNotification.border.color = "green"
-                profileLabel.text = "Profile " + profileManager.currentProfile + " selected"
-            }
-            else {
-                profileNotification.color = "#ffbfbf"
-                profileNotification.border.color = "red"
-                profileLabel.text = "Profile is not selected"
-            }
-        }
     }
+    DictionaryManager {
+        id: dictionaryManager
+    }
+
     ProfileSettings {
         id: profilePopup
         visible: false
@@ -117,27 +109,35 @@ ApplicationWindow {
                PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
                PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
                PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary is not selected") }
+               PropertyChanges { target: sessionButton; enabled: false }
+               when: profileManager.currentProfile=="" && dictionaryManager.currentDictionary==""
             },
             State {
                name: "Profile"
                PropertyChanges { target: profileNotification; color: "#ffbfbf"; border.color: "red" }
                PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
                PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected")}
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary " + dictionaryManager.currentDictionary + " selected")}
+               PropertyChanges { target: sessionButton; enabled: false }
+               when: profileManager.currentProfile=="" && dictionaryManager.currentDictionary!=""
             },
             State {
                name: "Dictionary"
                PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
                PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
-               PropertyChanges { target: profileLabel; text: qsTr("Dictionary " + profileManager.currentProfile + " selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Profile is not selected")}
+               PropertyChanges { target: profileLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected") }
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary is not selected")}
+               PropertyChanges { target: sessionButton; enabled: false }
+               when: profileManager.currentProfile!="" && dictionaryManager.currentDictionary==""
             },
             State {
-                name: "Ready"
-                PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
-                PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
-                PropertyChanges { target: profileLabel; text: qsTr("Dictionary " + profileManager.currentProfile + " selected") }
-                PropertyChanges { target: dictionaryLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected")}
+               name: "Ready"
+               PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
+               PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
+               PropertyChanges { target: profileLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected") }
+               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary " + dictionaryManager.currentDictionary + " selected")}
+               PropertyChanges { target: sessionButton; enabled: true }
+               when: profileManager.currentProfile!="" && dictionaryManager.currentDictionary!=""
             }
         ]
     }

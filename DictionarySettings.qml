@@ -18,7 +18,23 @@ Dialog {
         width: dialog.parent.width/2
         height: dialog.parent.height/2
     }
-
+    Dialog {
+        id: addDialog
+        visible: false
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: parent.width
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        TextField {
+            id: textField
+            width: parent.width
+            placeholderText: qsTr("Enter title")
+        }
+        onAccepted: {
+            dictionaryManager.createDictionary(textField.text);
+            textField.text = ""
+        }
+    }
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
@@ -28,11 +44,16 @@ Dialog {
             text: qsTr("Dictionary:")
         }
         ComboBox {
+            id: dictionarySelector
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: columnLayout.width
             Layout.bottomMargin: 20
+            model: dictionaryManager.dictionaries
+            onCurrentTextChanged: countLabel.text = qsTr("Number of words: ") +
+                                   dictionaryManager.getWordsFromDict(currentText).length
         }
         Label {
+            id: countLabel
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Number of words: 0")
         }
@@ -42,17 +63,22 @@ Dialog {
             Button {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Add")
+                onClicked: addDialog.visible = true;
             }
             Button {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Edit");
-                onClicked: dictEditor.visible=!dictEditor.visible
+                onClicked: {dictEditor.visible=!dictEditor.visible;
+                    dictionaryManager.currentDictionary = dictionarySelector.currentText;
+                    console.warn(dictionaryManager.model) }
             }
             Button {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Delete");
+                onClicked: dictionaryManager.deleteDictionary(dictionarySelector.currentText)
             }
         }
     }
+    onAccepted: dictionaryManager.currentDictionary = dictionarySelector.currentText;
 
 }

@@ -50,14 +50,16 @@ void ProfileManager::updateArrays()
     profiles.clear();
     QStringList conf = QDir("profiles").entryList(QStringList() << "*.config", QDir::Files);
     for(QString &fname : conf) {
-        pushProfile(fname.remove(".config"));
+        profiles.push_back(fname.remove(".config"));
     }
 }
 
 void ProfileManager::createProfile(const QString &name)
 {
-    if (QFile("profiles/"+name+".config").open(QIODevice::ReadWrite))
+    if (QFile("profiles/"+name+".config").open(QIODevice::ReadWrite)) {
         updateArrays();
+        emit profilesChanged();
+    }
     else throw std::runtime_error("In ProfileManager::createProfile: can't open file");
 }
 

@@ -7,12 +7,10 @@
 #include <iostream>
 
 
-Dictionary::Dictionary(QString path)
+Dictionary::Dictionary(QString name)
 {
-    pathToDict = path;
-    path.remove("dictionaries/");
-    path.remove(".dict");
-    dictName = path;
+    pathToDict = "dictionaries/"+name+".dict";
+    dictName = name;
     updateWords();
 }
 void Dictionary::insertWord(Word w)         // функция для вставки слова
@@ -31,14 +29,12 @@ void Dictionary::deleteWord(Word w) // если слово есть в слов�
     }
 }
 
-
-
 void Dictionary::updateWords()
 {
     std::string f,s;
-    words.clear(); // чистим массив со словами с словаре
+    words.clear();
     std::fstream dictFile(pathToDict.toStdString(), std::ios::in);
-    while (std::getline(dictFile,f,';')) {                                          // считываем по 2 слова и вставляем в массив слов
+    while (std::getline(dictFile,f,';')) {
         std::getline(dictFile,s,';');
         words.push_back(Word(QString::fromStdString(f),QString::fromStdString(s)));
 
@@ -61,7 +57,7 @@ long long Dictionary::findWord(Word w)      // находим индекс сл�
     return -1;
 }
 
-QVector<Word> Dictionary::getWords() const
+QList<Word> Dictionary::getWords() const
 {
     return words;
 }
