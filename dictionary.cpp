@@ -13,15 +13,15 @@ Dictionary::Dictionary(QString name)
     dictName = name;
     updateWords();
 }
-void Dictionary::insertWord(Word w)         // функция для вставки слова
+void Dictionary::insertWord(Word w)
 {
     std::fstream dictFile(pathToDict.toStdString(), std::ios::app);
-    dictFile << w.getFirst().toStdString() << ";" << w.getSecond().toStdString() << ";"; // разделителем будет ;
+    dictFile << w.getFirst().toStdString() << ";" << w.getSecond().toStdString() << ";"; // ; is a separator
     dictFile.close();
     words.push_back(w);
 }
 
-void Dictionary::deleteWord(Word w) // если слово есть в словаре то удаляем его из массива и обновляем файл словаря в соответствии с массивом
+void Dictionary::deleteWord(Word w)
 {
     if (findWord(w)!=-1) {
         words.erase(words.begin()+findWord(w));
@@ -42,7 +42,7 @@ void Dictionary::updateWords()
     dictFile.close();
 }
 
-void Dictionary::updateFile()               // перезаписываем файл, добавляя туда слова из массива слов, с разделителем ; для каждого слова из пары
+void Dictionary::updateFile()    // rewrites file according to the "words" array
 {
     std::fstream dictFile(pathToDict.toStdString(), std::ios::out);
     for (int i = 0; i < words.size();++i)
@@ -50,7 +50,7 @@ void Dictionary::updateFile()               // перезаписываем фа
     dictFile.close();
 }
 
-long long Dictionary::findWord(Word w)      // находим индекс слова в словаре, -1 если такого нет
+long long Dictionary::findWord(Word w)
 {
     for (int i = 0;i < words.size();++i)
         if (w.getFirst()==words[i].getFirst()&&w.getSecond()==words[i].getSecond()) return i;
@@ -72,9 +72,6 @@ QString Dictionary::getDictName() const
     return dictName;
 }
 
-Dictionary::Dictionary()
-{
-
-}
+Dictionary::Dictionary() {}
 
 

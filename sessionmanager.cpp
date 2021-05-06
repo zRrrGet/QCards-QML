@@ -1,6 +1,8 @@
 #include "sessionmanager.h"
 
-SessionManager::SessionManager()
-{
+SessionManager::SessionManager() { }
 
+QString SessionManager::getCurrentWord()
+{
+    return QString();
 }

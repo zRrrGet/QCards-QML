@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
-import custom.managers 1.0
+import custom.managers 1.0 // custom module of the project
 
 ApplicationWindow {
     id: mainWindow
@@ -14,6 +14,7 @@ ApplicationWindow {
     palette.window: "#8cddff"
     palette.button: "#00b4ff"
     title: "QCards"
+
     ProfileManager {
         id: profileManager
     }
@@ -31,6 +32,7 @@ ApplicationWindow {
     }
 
     ColumnLayout {
+        id: mainLayout
         width: parent.width
         height: parent.height
         Item {
@@ -40,14 +42,16 @@ ApplicationWindow {
                 id: profileNotification
                 width: mainWindow.width
                 height: profileLabel.height+15
-                color: "#ffbfbf"
-                border.color: "red"
+                color: profileManager.currentProfile===""?"#ffbfbf":"#90ff8a";
+                border.color: profileManager.currentProfile===""?"red":"green"
                 border.width: 2
                 Label {
                     anchors.centerIn: parent
                     id: profileLabel
                     font.pointSize: 10
-                    text: qsTr("Profile is not selected")
+                    text: profileManager.currentProfile===""?
+                              qsTr("Profile is not selected"):
+                                qsTr("Profile " + profileManager.currentProfile + " selected")
                 }
             }
             Rectangle {
@@ -55,14 +59,16 @@ ApplicationWindow {
                 anchors.top: profileNotification.bottom
                 width: mainWindow.width
                 height: dictionaryLabel.height+15
-                color: "#ffbfbf"
-                border.color: "red"
+                color: dictionaryManager.currentDictionary===""?"#ffbfbf":"#90ff8a";
+                border.color: dictionaryManager.currentDictionary===""?"red":"green"
                 border.width: 2
                 Label {
                     anchors.centerIn: parent
                     id: dictionaryLabel
                     font.pointSize: 10
-                    text: qsTr("Dictionary is not selected")
+                    text: dictionaryManager.currentDictionary===""?
+                              qsTr("Dictionary is not selected"):
+                                qsTr("Dictionary " + dictionaryManager.currentDictionary + " selected")
                 }
             }
 
@@ -70,6 +76,7 @@ ApplicationWindow {
         ColumnLayout {
             Layout.alignment: Qt.AlignBottom
             Rectangle {
+                id: blueLine
                 Layout.preferredWidth: mainWindow.width
                 height: 2
                 color: "blue"
@@ -79,9 +86,9 @@ ApplicationWindow {
                 radius: 5
                 text: qsTr("Start session")
                 Layout.preferredWidth: mainWindow.width
+                onClicked: stateGroup.state = "SessionStarted"
             }
             RowLayout {
-                Layout.alignment: Qt.AlignBottom
                 Layout.preferredWidth: mainWindow.width
                 RoundButton {
                     id: profileButton
@@ -100,44 +107,65 @@ ApplicationWindow {
             }
         }
     }
+
+    // session elements
+    Label {
+        id: centralLabel
+        text: "aaaaaaaaaaaaaaa"
+        anchors.centerIn: mainLayout
+        font.pointSize: 20
+        visible: false
+    }
+    Rectangle {
+        id: sessionLine
+        width: mainWindow.width
+        height: 2
+        color: "gray"
+        anchors.bottom: answerField.top
+        anchors.bottomMargin: 10
+        visible: false
+    }
+    TextField {
+        id: answerField
+        placeholderText: qsTr("Translation")
+        width: mainWindow.width
+        anchors.bottom: inputButton.top
+        visible: false
+    }
+    RoundButton {
+        id: inputButton
+        radius: 5
+        text: qsTr("OK")
+        width: mainWindow.width
+        anchors.bottom: mainLayout.bottom
+        visible: false
+    }
+    //
+
     StateGroup {
         id: stateGroup
         states: [
             State {
-               name: "ProfileAndDictionary"
-               PropertyChanges { target: profileNotification; color: "#ffbfbf"; border.color: "red" }
-               PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
-               PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary is not selected") }
-               PropertyChanges { target: sessionButton; enabled: false }
-               when: profileManager.currentProfile=="" && dictionaryManager.currentDictionary==""
-            },
-            State {
-               name: "Profile"
-               PropertyChanges { target: profileNotification; color: "#ffbfbf"; border.color: "red" }
-               PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
-               PropertyChanges { target: profileLabel; text: qsTr("Profile is not selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary " + dictionaryManager.currentDictionary + " selected")}
-               PropertyChanges { target: sessionButton; enabled: false }
-               when: profileManager.currentProfile=="" && dictionaryManager.currentDictionary!=""
-            },
-            State {
-               name: "Dictionary"
-               PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
-               PropertyChanges { target: dictionaryNotification; color: "#ffbfbf"; border.color: "red" }
-               PropertyChanges { target: profileLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary is not selected")}
-               PropertyChanges { target: sessionButton; enabled: false }
-               when: profileManager.currentProfile!="" && dictionaryManager.currentDictionary==""
+                name: "notReady"
+                PropertyChanges { target: sessionButton; enabled: false }
+                when: profileManager.currentProfile==="" || dictionaryManager.currentDictionary===""
             },
             State {
                name: "Ready"
-               PropertyChanges { target: profileNotification; color: "#90ff8a"; border.color: "green" }
-               PropertyChanges { target: dictionaryNotification; color: "#90ff8a"; border.color: "green" }
-               PropertyChanges { target: profileLabel; text: qsTr("Profile " + profileManager.currentProfile + " selected") }
-               PropertyChanges { target: dictionaryLabel; text: qsTr("Dictionary " + dictionaryManager.currentDictionary + " selected")}
                PropertyChanges { target: sessionButton; enabled: true }
-               when: profileManager.currentProfile!="" && dictionaryManager.currentDictionary!=""
+               when: profileManager.currentProfile!=="" && dictionaryManager.currentDictionary!==""
+            },
+            State {
+               name: "SessionStarted"
+               PropertyChanges { target: sessionButton; enabled: true }
+               PropertyChanges { target: profileButton; visible: false }
+               PropertyChanges { target: dictionaryButton; visible: false }
+               PropertyChanges { target: sessionButton; visible: false }
+               PropertyChanges { target: blueLine; visible: false }
+               PropertyChanges { target: inputButton; visible: true }
+               PropertyChanges { target: answerField; visible: true }
+               PropertyChanges { target: sessionLine; visible: true }
+               PropertyChanges { target: centralLabel; visible: true }
             }
         ]
     }

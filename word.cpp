@@ -5,7 +5,6 @@ QString Word::getSecond() const
     return second;
 }
 
-
 void Word::setFirst(const QString &value)
 {
     first = value;

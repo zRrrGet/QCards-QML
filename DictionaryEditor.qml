@@ -43,6 +43,8 @@ Dialog {
         onAccepted: {
             if (fromField.text == "" || toField.text == "") {
                 accepted = false;
+                fromField.text = "";
+                toField.text = "";
             }
             else {
                 dictionaryManager.addWord(fromField.text, toField.text);
@@ -60,7 +62,7 @@ Dialog {
         height: dialog.height-dialog.implicitFooterHeight-dialog.padding*3
         model: wm
         headerPositioning: ListView.OverlayHeader
-        clip: true
+        clip: tru
         header: Item {
                 width: parent.width
                 height: fromHeaderLabel.height+1
@@ -78,7 +80,9 @@ Dialog {
                             text: qsTr("original word")
                         }
                     }
+
                     Rectangle { height: toHeaderLabel.height; width: 1; color: "black" }
+
                     Rectangle {
                         width: parent.width/2
                         height: toHeaderLabel.height
