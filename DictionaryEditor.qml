@@ -19,7 +19,7 @@ Dialog {
     }
     WordModel {
         id: wm
-        words: dictionaryManager.currentWords
+        words: dictionaryManager.editedWords
     }
     Dialog {
         id: addDialog
@@ -41,9 +41,14 @@ Dialog {
             placeholderText: qsTr("Enter translation")
         }
         onAccepted: {
-            dictionaryManager.addWord(fromField.text, toField.text);
-            fromField.text = ""
-            toField.text = ""
+            if (fromField.text == "" || toField.text == "") {
+                accepted = false;
+            }
+            else {
+                dictionaryManager.addWord(fromField.text, toField.text);
+                fromField.text = ""
+                toField.text = ""
+            }
         }
     }
 
@@ -70,7 +75,7 @@ Dialog {
                         Label {
                             id: fromHeaderLabel
                             x: 10
-                            text: "original word"
+                            text: qsTr("original word")
                         }
                     }
                     Rectangle { height: toHeaderLabel.height; width: 1; color: "black" }
@@ -81,7 +86,7 @@ Dialog {
                         Label {
                             id: toHeaderLabel
                             x: 10
-                            text: "translation"
+                            text: qsTr("translation")
                         }
                     }
                 }
@@ -163,5 +168,8 @@ Dialog {
             Layout.fillWidth: true
             onClicked:  if (table.count) dictionaryManager.deleteWordAt(table.currentIndex)
         }
+    }
+    onAccepted: {
+        dictionarySelector.updateWordCounter()
     }
 }

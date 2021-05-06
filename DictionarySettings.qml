@@ -49,8 +49,11 @@ Dialog {
             Layout.preferredWidth: columnLayout.width
             Layout.bottomMargin: 20
             model: dictionaryManager.dictionaries
-            onCurrentTextChanged: countLabel.text = qsTr("Number of words: ") +
-                                   dictionaryManager.getWordsFromDict(currentText).length
+            onCurrentTextChanged: updateWordCounter()
+            function updateWordCounter() {
+                countLabel.text = qsTr("Number of words: ") +
+                                    dictionaryManager.getWordsFromDict(currentText).length
+            }
         }
         Label {
             id: countLabel
@@ -69,7 +72,7 @@ Dialog {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Edit");
                 onClicked: {dictEditor.visible=!dictEditor.visible;
-                    dictionaryManager.currentDictionary = dictionarySelector.currentText;
+                    dictionaryManager.editedDictionary = dictionarySelector.currentText;
                     console.warn(dictionaryManager.model) }
             }
             Button {

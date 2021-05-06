@@ -58,25 +58,38 @@ QVariantList DictionaryManager::getWordsFromDict(const QString &dict)
                                              [&dict](Dictionary &d){return d.getDictName()==dict;})->getWords());
 }
 
-void DictionaryManager::setWords(QVariantList a)
-{
-
-}
-
 void DictionaryManager::deleteWordAt(int ind)
 {
-    auto current = std::find_if(dicts.begin(), dicts.end(),
-                       [this](Dictionary &d){return d.getDictName()==currentDictionary;});
-    current->deleteWord(current->getWords().at(ind));
-    emit currentWordsChanged();
+    auto editedDict = std::find_if(dicts.begin(), dicts.end(),
+                       [this](Dictionary &d){return d.getDictName()==editedDictionary;});
+    editedDict->deleteWord(editedDict->getWords().at(ind));
+    emit editedWordsChanged();
 }
 
 void DictionaryManager::addWord(QString from, QString to)
 {
-    auto current = std::find_if(dicts.begin(), dicts.end(),
-                       [this](Dictionary &d){return d.getDictName()==currentDictionary;});
-    current->insertWord(Word(from, to));
-    emit currentWordsChanged();
+    auto editedDict = std::find_if(dicts.begin(), dicts.end(),
+                       [this](Dictionary &d){return d.getDictName()==editedDictionary;});
+    editedDict->insertWord(Word(from, to));
+    emit editedWordsChanged();
+}
+
+QString DictionaryManager::getEditedDictionary() const
+{
+    return editedDictionary;
+}
+
+void DictionaryManager::setEditedDictionary(const QString &value)
+{
+    editedDictionary = value;
+    emit editedDictionaryChanged();
+    emit editedWordsChanged();
+}
+
+QVariantList DictionaryManager::getEditedWords()
+{
+    if (editedDictionary=="") return QVariantList();
+    return getWordsFromDict(editedDictionary);
 }
 
 void DictionaryManager::updateDictionaries()
