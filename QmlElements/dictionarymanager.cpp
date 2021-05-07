@@ -37,6 +37,7 @@ void DictionaryManager::deleteDictionary(const QString &name)
 
 void DictionaryManager::createDictionary(const QString &name)
 {
+    if (!QDir("dictionaries").exists()) QDir().mkdir("dictionaries");
     if (QFile("dictionaries/"+name+".dict").open(QIODevice::ReadWrite)) {
         updateDictionaries();
         emit dictionariesChanged();

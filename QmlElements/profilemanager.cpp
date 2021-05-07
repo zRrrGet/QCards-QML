@@ -56,6 +56,7 @@ void ProfileManager::updateArrays()
 
 void ProfileManager::createProfile(const QString &name)
 {
+    if (!QDir("profiles").exists()) QDir().mkdir("profiles");
     if (QFile("profiles/"+name+".config").open(QIODevice::ReadWrite)) {
         updateArrays();
         emit profilesChanged();
