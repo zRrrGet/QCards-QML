@@ -5,6 +5,7 @@
 #include <QtQml>
 #include "profile.h"
 
+// class to manage with profiles(adding, deleting, etc)
 class ProfileManager : public QObject
 {
     Q_OBJECT

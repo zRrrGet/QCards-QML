@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.14
 import QtQuick.Controls 2.15
 import QtQml.Models 2.15
 
+// dialog to manage with dictionaries(adding, removing, editing)
 Dialog {
     id: dialog
     width: parent.width/3
@@ -86,6 +87,7 @@ Dialog {
         }
     }
     onAccepted: {
+        // if selected dictionary have no words - don't select it
         dictionaryManager.currentDictionary = dictionarySelector.currentText;
         if (dictionaryManager.currentWords.length==0) dictionaryManager.currentDictionary = ""
     }

@@ -46,10 +46,11 @@ QVariantList SessionManager::end()
     QSettings sets("profiles/"+sessionProfile->getUserName()+".config", QSettings::IniFormat);
     sets.beginGroup("Stats");
 
+    // lastday contains last day when user studied, days is the number of day they studied
     if (sets.allKeys().contains("lastday")&&sets.value("lastday").toDate()!=QDate().currentDate()) {
         sets.setValue("days", sets.value("days").toInt()+1);
         sets.setValue("lastday",QDate().currentDate());
-    }                                                           // статистика по дням, записывается последний день, когда завершалась сессия, и прибавляется 1 день в статистике
+    }
     else if (!(sets.allKeys().contains("lastday"))) {
         sets.setValue("lastday", QDate().currentDate());
         sets.setValue("days", sets.value("days").toInt()+1);;
@@ -58,15 +59,16 @@ QVariantList SessionManager::end()
     sets.endGroup();
     sets.beginGroup(sessionDictionary->getDictName());
 
-    int remain = 6*sessionDictionary->getWords().size(); // для статистики, оставшиеся слова в словаре, с учетом стадий
+    int remain = 6*sessionDictionary->getWords().size(); // counting stages(6 stages)
 
     QStringList l = sets.allKeys();
-    for(QString &key : l)                     // вычитаем стадии слов из общего кол-ва
+    for(QString &key : l)
         remain-=sets.value(key).toInt();
     sets.endGroup();
 
     sets.beginGroup("Stats");
 
+    // put statistics
     info << answeredWordsCount << correctWordsCount << sets.value("days") << remain;
     info << (double(remain)/(6*sessionDictionary->getWords().size())*100);
 
@@ -75,6 +77,11 @@ QVariantList SessionManager::end()
     correctWordsCount=0;
     answeredWordsCount=0;
     return info;
+}
+
+int SessionManager::getPoolWordsCount()
+{
+    return sessionWords.size();
 }
 
 int SessionManager::getSessionWordCount() const

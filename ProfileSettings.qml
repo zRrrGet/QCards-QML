@@ -5,6 +5,8 @@ import QtQuick.Controls 2.15
 import QtQml.Models 2.15
 import custom.managers 1.0
 
+
+// dialog to manage with profiles(adding, removing)
 Dialog {
     id: dialog
     width: parent.width/3
@@ -24,7 +26,7 @@ Dialog {
         TextField {
             id: textField
             width: parent.width
-            placeholderText: qsTr("Enter name")
+            placeholderText: "Enter name"
         }
         onAccepted: {
             profileManager.createProfile(textField.text);
@@ -51,12 +53,12 @@ Dialog {
             Layout.alignment: Qt.AlignBottom
             Button {
                 Layout.preferredWidth: columnLayout.width/2
-                text: qsTr("Add")
+                text: "Add"
                 onClicked: addDialog.visible = true
             }
             Button {
                 Layout.preferredWidth: columnLayout.width/2
-                text: qsTr("Delete");
+                text: "Delete";
                 onClicked: if (profileSelector.currentText!="") profileManager.deleteProfile(profileSelector.currentText)
             }
         }

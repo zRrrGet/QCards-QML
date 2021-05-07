@@ -43,7 +43,7 @@ ApplicationWindow {
         modal: true
         standardButtons: Dialog.Ok | Dialog.Cancel
         Label {
-            text: qsTr("Number of word in session:")
+            text: qsTr("Number of words in session:")
             anchors.bottom: numberField.top
         }
         TextField {
@@ -60,8 +60,15 @@ ApplicationWindow {
                 sessionManager.profile = profileManager.currentProfile
                 sessionManager.sessionWordCount = numberField.text
                 sessionManager.start()
-                centralLabel.text = sessionManager.currentWord
-                numberField.text = ""
+                // if user learnt all the words
+                if (sessionManager.getPoolWordsCount()==0) {
+                    stateGroup.state = "Ready"
+                    sessionManager.end();
+                }
+                else {
+                    centralLabel.text = sessionManager.currentWord
+                    numberField.text = ""
+                }
             }
             else
                 accepted = false;
@@ -72,6 +79,7 @@ ApplicationWindow {
         id: mainLayout
         width: parent.width
         height: parent.height
+        // notifications at the top of window
         Item {
             Layout.alignment: Qt.AlignTop
             Layout.preferredWidth: mainWindow.width
@@ -178,12 +186,14 @@ ApplicationWindow {
         visible: false
         property bool isChecking: true
         property bool isDone: false
-        onClicked: {            
+        onClicked: {
+            // quit the session
             if (isDone) {
                 stateGroup.state = "Ready"
                 isDone = false
                 isChecking = true
             }
+            // if no words left - print information
             else if ((sessionManager.sessionWordCount<=sessionManager.answeredWordsCount
                     || sessionManager.answeredWordsCount>=dictionaryManager.currentWords.length)
                      &&!isChecking&&answerField.text!="") {
@@ -200,6 +210,7 @@ ApplicationWindow {
                 answerField.visible = false
                 isDone = true;
             }
+            // display the word
             else if (!isChecking) {
                 centralLabel.color = "black"
                 sessionLine.color = "gray"
@@ -207,23 +218,26 @@ ApplicationWindow {
                 isChecking = true;
                 answerField.text = ""
             }
-            else if (answerField.text!=""&&answerField.text === sessionManager.sendAnswer(answerField.text)) {
-                centralLabel.color = "green"
-                sessionLine.color = "green"
-                centralLabel.text = centralLabel.text + qsTr("\n Right!")
+            // if the word is displayed and user input the answer to it - we do the checks
+            else if (answerField.text!="") {
+                var ans = sessionManager.sendAnswer(answerField.text)
+                if (answerField.text === ans) {
+                    centralLabel.color = "green"
+                    sessionLine.color = "green"
+                    centralLabel.text = centralLabel.text + qsTr("\n Right!")
+                }
+                else {
+                    centralLabel.color = "red"
+                    sessionLine.color = "red"
+                    centralLabel.text = centralLabel.text + qsTr("\n Wrong("+ans+")!")
+                }
                 isChecking = false;
             }
-            else if (answerField.text!=""){
-                centralLabel.color = "red"
-                sessionLine.color = "red"
-                centralLabel.text = centralLabel.text + qsTr("\n Wrong!")
-                isChecking = false;
-            }
-
         }
     }
     //
 
+    // states to change visibilities of some buttons
     StateGroup {
         id: stateGroup
         states: [
@@ -241,6 +255,7 @@ ApplicationWindow {
                PropertyChanges { target: inputButton; visible: false }
                PropertyChanges { target: sessionLine; visible: false }
                PropertyChanges { target: centralLabel; visible: false }
+               PropertyChanges { target: answerField; visible: false }
                when: profileManager.currentProfile!=="" && dictionaryManager.currentDictionary!==""
             },
             State {

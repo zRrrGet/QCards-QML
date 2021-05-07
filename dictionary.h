@@ -6,6 +6,7 @@
 #include <QList>
 #include <memory>
 
+// incapsulates name, words and file management
 class Dictionary
 {
 private:

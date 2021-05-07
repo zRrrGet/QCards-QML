@@ -5,14 +5,20 @@
 #include "dictionary.h"
 #include "wordmodel.h"
 
+// class for managing dictionaries - getting words from dictionaries, etc
 class DictionaryManager : public QObject
 {
     Q_OBJECT
+    // list of all dictionary names
     Q_PROPERTY(QVariantList dictionaries READ getDicts NOTIFY dictionariesChanged)
+    // selected dictionary to process
     Q_PROPERTY(QString currentDictionary READ getCurrentDictionary WRITE setCurrentDictionary
                NOTIFY currentDictionaryChanged)
+    // words of selected dictionary
     Q_PROPERTY(QVariantList currentWords READ getWords NOTIFY currentWordsChanged)
+    // words of edited dictionary
     Q_PROPERTY(QVariantList editedWords READ getEditedWords NOTIFY editedWordsChanged)
+    // dictionary which is edited now
     Q_PROPERTY(QString editedDictionary READ getEditedDictionary WRITE setEditedDictionary
                NOTIFY editedDictionaryChanged)
     QML_ELEMENT
@@ -30,7 +36,9 @@ public:
     Q_INVOKABLE void createDictionary(const QString &name);
     QVariantList getWords();
     Q_INVOKABLE QVariantList getWordsFromDict(const QString &dict);
+    // delete word from edited dictionary
     Q_INVOKABLE void deleteWordAt(int ind);
+    // add word to edited dictionary
     Q_INVOKABLE void addWord(QString from, QString to);
     QString getEditedDictionary() const;
     void setEditedDictionary(const QString &value);

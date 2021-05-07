@@ -1,5 +1,4 @@
 #include "dictionarymanager.h"
-#include "wordelement.h"
 #include <QDebug>
 
 QString DictionaryManager::getCurrentDictionary() const

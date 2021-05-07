@@ -5,6 +5,7 @@ import QtQuick.Controls 2.15
 import QtQml.Models 2.15
 import custom.managers 1.0
 
+// dialog with table to edit contents of dictionary
 Dialog {
     id: dialog
     x: (parent.width - width) / 2
@@ -21,6 +22,7 @@ Dialog {
         id: wm
         words: dictionaryManager.editedWords
     }
+    // add button dialog
     Dialog {
         id: addDialog
         visible: false

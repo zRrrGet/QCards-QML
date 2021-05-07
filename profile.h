@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtQml>
 
+// incapsulates some statisticks and information about profile
 class Profile
 {
 private:
