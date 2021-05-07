@@ -2,7 +2,7 @@
 #define DICTIONARYMANAGER_H
 #include <QObject>
 #include <QtQml>
-#include "dictionary.h"
+#include "../dictionary.h"
 #include "wordmodel.h"
 
 // class for managing dictionaries - getting words from dictionaries, etc

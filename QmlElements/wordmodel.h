@@ -1,7 +1,7 @@
 #ifndef WORDMODEL_H
 #define WORDMODEL_H
 
-#include "word.h"
+#include "../word.h"
 
 #include <QAbstractListModel>
 #include <QtQml>

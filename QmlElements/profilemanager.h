@@ -3,7 +3,7 @@
 #include <QVector>
 #include <QObject>
 #include <QtQml>
-#include "profile.h"
+#include "../profile.h"
 
 // class to manage with profiles(adding, deleting, etc)
 class ProfileManager : public QObject

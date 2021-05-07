@@ -1,8 +1,8 @@
-CONFIG += qmltypes
 
-QT += quick
+QT += qml quick
 
 CONFIG += c++11
+CONFIG += qmltypes
 
 QML_IMPORT_NAME = custom.managers
 QML_IMPORT_MAJOR_VERSION = 1
@@ -12,23 +12,25 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        QmlElements/dictionarymanager.cpp \
+        QmlElements/profilemanager.cpp \
+        QmlElements/sessionmanager.cpp \
+        QmlElements/wordmodel.cpp \
         dictionary.cpp \
-        dictionarymanager.cpp \
         main.cpp \
         profile.cpp \
-        profilemanager.cpp \
-        sessionmanager.cpp \
-        word.cpp \
-        wordmodel.cpp
+        word.cpp
 
 RESOURCES += \
-    res.qrc
+    QmlElements/res.qrc
 
 TRANSLATIONS += \ts\
     QCards-QML_en_US.ts
 
+INCLUDEPATH = QmlElements/
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = $$PWD
+QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -44,10 +46,10 @@ DISTFILES += \
     ts/QCards-QML_en_US.ts
 
 HEADERS += \
+    QmlElements/dictionarymanager.h \
+    QmlElements/profilemanager.h \
+    QmlElements/sessionmanager.h \
+    QmlElements/wordmodel.h \
     dictionary.h \
-    dictionarymanager.h \
     profile.h \
-    profilemanager.h \
-    sessionmanager.h \
-    word.h \
-    wordmodel.h
+    word.h

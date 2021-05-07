@@ -1,7 +1,7 @@
 #ifndef SESSIONMANAGER_H
 #define SESSIONMANAGER_H
-#include "dictionary.h"
-#include "profile.h"
+#include "../dictionary.h"
+#include "../profile.h"
 
 #include <QObject>
 #include <QtQml>
