@@ -52,6 +52,7 @@ ApplicationWindow {
             placeholderText: qsTr("Input number")
             inputMethodHints: Qt.ImhDigitsOnly
             anchors.bottom: parent.bottom
+            validator: IntValidator { bottom: 1 }
         }
         onAccepted: {
             if (numberField.text!="") {
