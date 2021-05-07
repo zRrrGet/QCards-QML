@@ -41,16 +41,17 @@ Dialog {
             placeholderText: qsTr("Enter translation")
         }
         onAccepted: {
-            if (fromField.text == "" || toField.text == "") {
-                accepted = false;
+            if (fromField.text != "" && toField.text != "") {
+                dictionaryManager.addWord(fromField.text, toField.text);
                 fromField.text = "";
                 toField.text = "";
             }
             else {
-                dictionaryManager.addWord(fromField.text, toField.text);
-                fromField.text = ""
-                toField.text = ""
+                fromField.text = "";
+                toField.text = "";
+                accepted = false;
             }
+
         }
     }
 
@@ -62,7 +63,7 @@ Dialog {
         height: dialog.height-dialog.implicitFooterHeight-dialog.padding*3
         model: wm
         headerPositioning: ListView.OverlayHeader
-        clip: tru
+        clip: true
         header: Item {
                 width: parent.width
                 height: fromHeaderLabel.height+1

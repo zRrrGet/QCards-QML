@@ -71,17 +71,22 @@ Dialog {
             Button {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Edit");
-                onClicked: {dictEditor.visible=!dictEditor.visible;
-                    dictionaryManager.editedDictionary = dictionarySelector.currentText;
-                    console.warn(dictionaryManager.model) }
+                onClicked: {
+                    if (dictionarySelector.currentText!="") {
+                        dictEditor.visible=!dictEditor.visible;
+                        dictionaryManager.editedDictionary = dictionarySelector.currentText;
+                    }
+                }
             }
             Button {
                 Layout.preferredWidth: dialog.width/3-dialog.padding
                 text: qsTr("Delete");
-                onClicked: dictionaryManager.deleteDictionary(dictionarySelector.currentText)
+                onClicked: if (dictionarySelector.currentText!="") dictionaryManager.deleteDictionary(dictionarySelector.currentText)
             }
         }
     }
-    onAccepted: dictionaryManager.currentDictionary = dictionarySelector.currentText;
-
+    onAccepted: {
+        dictionaryManager.currentDictionary = dictionarySelector.currentText;
+        if (dictionaryManager.currentWords.length==0) dictionaryManager.currentDictionary = ""
+    }
 }

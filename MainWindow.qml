@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
-import custom.managers 1.0 // custom module of the project
+import custom.managers 1.0 // qml module of the project
 
 ApplicationWindow {
     id: mainWindow
@@ -21,6 +21,9 @@ ApplicationWindow {
     DictionaryManager {
         id: dictionaryManager
     }
+    SessionManager {
+        id: sessionManager
+    }
 
     ProfileSettings {
         id: profilePopup
@@ -29,6 +32,40 @@ ApplicationWindow {
     DictionarySettings {
         id: dictionaryPopup
         visible: false
+    }
+    Dialog {
+        id: askNumber
+        width: parent.width/3
+        height: 150
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        visible: false
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        Label {
+            text: qsTr("Number of word in session:")
+            anchors.bottom: numberField.top
+        }
+        TextField {
+            id: numberField
+            width: parent.width
+            placeholderText: qsTr("Input number")
+            inputMethodHints: Qt.ImhDigitsOnly
+            anchors.bottom: parent.bottom
+        }
+        onAccepted: {
+            if (numberField.text!="") {
+                stateGroup.state = "SessionStarted"
+                sessionManager.dictionary = dictionaryManager.currentDictionary
+                sessionManager.profile = profileManager.currentProfile
+                sessionManager.sessionWordCount = numberField.text
+                sessionManager.start()
+                centralLabel.text = sessionManager.currentWord
+                numberField.text = ""
+            }
+            else
+                accepted = false;
+        }
     }
 
     ColumnLayout {
@@ -86,7 +123,7 @@ ApplicationWindow {
                 radius: 5
                 text: qsTr("Start session")
                 Layout.preferredWidth: mainWindow.width
-                onClicked: stateGroup.state = "SessionStarted"
+                onClicked: askNumber.visible = true
             }
             RowLayout {
                 Layout.preferredWidth: mainWindow.width
@@ -111,9 +148,9 @@ ApplicationWindow {
     // session elements
     Label {
         id: centralLabel
-        text: "aaaaaaaaaaaaaaa"
         anchors.centerIn: mainLayout
         font.pointSize: 20
+        horizontalAlignment: Text.AlignHCenter
         visible: false
     }
     Rectangle {
@@ -139,6 +176,51 @@ ApplicationWindow {
         width: mainWindow.width
         anchors.bottom: mainLayout.bottom
         visible: false
+        property bool isChecking: true
+        property bool isDone: false
+        onClicked: {            
+            if (isDone) {
+                stateGroup.state = "Ready"
+                isDone = false
+                isChecking = true
+            }
+            else if ((sessionManager.sessionWordCount<=sessionManager.answeredWordsCount
+                    || sessionManager.answeredWordsCount>=dictionaryManager.currentWords.length)
+                     &&!isChecking&&answerField.text!="") {
+                var vl = sessionManager.end()
+                centralLabel.color = "black";
+                sessionLine.color = "gray"
+                centralLabel.text = qsTr("Congratulations! For this session:\n"+
+                                            "- You considered " + vl[0] + " words.\n"+
+                                            "- Correct answers: " + vl[1] + ".\n"+
+                                            "- Incorrect answers: " + (vl[0]-vl[1]) + ".\n"+
+                                            "- Number of days studying: " + vl[2] + ".\n"+
+                                            "Words remaining: " + vl[3] + "(" + vl[4].toFixed(2) + "%).")
+                answerField.text = ""
+                answerField.visible = false
+                isDone = true;
+            }
+            else if (!isChecking) {
+                centralLabel.color = "black"
+                sessionLine.color = "gray"
+                centralLabel.text = sessionManager.currentWord;
+                isChecking = true;
+                answerField.text = ""
+            }
+            else if (answerField.text!=""&&answerField.text === sessionManager.sendAnswer(answerField.text)) {
+                centralLabel.color = "green"
+                sessionLine.color = "green"
+                centralLabel.text = centralLabel.text + qsTr("\n Right!")
+                isChecking = false;
+            }
+            else if (answerField.text!=""){
+                centralLabel.color = "red"
+                sessionLine.color = "red"
+                centralLabel.text = centralLabel.text + qsTr("\n Wrong!")
+                isChecking = false;
+            }
+
+        }
     }
     //
 
@@ -153,11 +235,16 @@ ApplicationWindow {
             State {
                name: "Ready"
                PropertyChanges { target: sessionButton; enabled: true }
+               PropertyChanges { target: profileButton; visible: true }
+               PropertyChanges { target: dictionaryButton; visible: true }
+               PropertyChanges { target: blueLine; visible: true }
+               PropertyChanges { target: inputButton; visible: false }
+               PropertyChanges { target: sessionLine; visible: false }
+               PropertyChanges { target: centralLabel; visible: false }
                when: profileManager.currentProfile!=="" && dictionaryManager.currentDictionary!==""
             },
             State {
                name: "SessionStarted"
-               PropertyChanges { target: sessionButton; enabled: true }
                PropertyChanges { target: profileButton; visible: false }
                PropertyChanges { target: dictionaryButton; visible: false }
                PropertyChanges { target: sessionButton; visible: false }

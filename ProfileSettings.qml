@@ -57,7 +57,7 @@ Dialog {
             Button {
                 Layout.preferredWidth: columnLayout.width/2
                 text: qsTr("Delete");
-                onClicked: profileManager.deleteProfile(profileSelector.currentText)
+                onClicked: if (profileSelector.currentText!="") profileManager.deleteProfile(profileSelector.currentText)
             }
         }
     }
